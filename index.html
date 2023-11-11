@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookshelf</title>
+    <link rel="stylesheet" href="src/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+      rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet" />
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li>
+          <button type="button" class="button-form">
+            <span class="material-icons-round"> bookmark_add </span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+    <main>
+      <section class="form-container">
+        <form class="form-group" id="bookForm">
+          <div class="input-group">
+            <input type="text" name="title" id="title" autocomplete="" />
+            <label for="title">Judul Buku</label>
+          </div>
+          <div class="input-group">
+            <input type="text" name="author" id="author" autocomplete="" />
+            <label for="author">Penulis</label>
+          </div>
+          <div class="input-group">
+            <input type="number" name="year" id="year" autocomplete="" />
+            <label for="year">Tahun Terbit</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" name="isComplete" id="isComplete" />
+            <label for="isComplete">Sudah Dibaca</label>
+          </div>
+          <button type="submit" class="btn-submit">Simpan</button>
+          <button type="button" class="btn-close">Batal</button>
+        </form>
+      </section>
+      <section class="shelf-container">
+        <h2>Belum dibaca</h2>
+        <div class="rack unread"></div>
+      </section>
+      <div class="divider"></div>
+      <section class="shelf-container">
+        <h2>Telah dibaca</h2>
+        <div class="rack done-reading"></div>
+      </section>
+    </main>
+    <footer>created By Fajar Hidayat</footer>
+    <script src="src/js/index.js"></script>
+  </body>
+</html>
