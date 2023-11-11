@@ -13,6 +13,7 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
       rel="stylesheet" />
+    <script src="https://unpkg.com/feather-icons"></script>
   </head>
   <body>
     <nav>
@@ -28,16 +29,16 @@
       <section class="form-container">
         <form class="form-group" id="bookForm">
           <div class="input-group">
-            <input type="text" name="title" id="title" autocomplete="" />
             <label for="title">Judul Buku</label>
+            <input type="text" name="title" id="title" autocomplete="" />
           </div>
           <div class="input-group">
-            <input type="text" name="author" id="author" autocomplete="" />
             <label for="author">Penulis</label>
+            <input type="text" name="author" id="author" autocomplete="" />
           </div>
           <div class="input-group">
-            <input type="number" name="year" id="year" autocomplete="" />
             <label for="year">Tahun Terbit</label>
+            <input type="number" name="year" id="year" autocomplete="" />
           </div>
           <div class="checkbox-group">
             <input type="checkbox" name="isComplete" id="isComplete" />
@@ -57,7 +58,15 @@
         <div class="rack done-reading"></div>
       </section>
     </main>
-    <footer>created By Fajar Hidayat</footer>
+    <footer>
+      created By Fajar Hidayat
+      <a href="https://github.com/fajarhidayat18/bookshelf">
+        <i data-feather="github"></i>
+      </a>
+    </footer>
     <script src="src/js/index.js"></script>
+    <script>
+      feather.replace();
+    </script>
   </body>
 </html>

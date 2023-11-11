@@ -20,6 +20,7 @@ form.addEventListener("submit", addBook);
 // menjalankan fungsi saat halaman di kunjungi atau dibuka
 loadDataFromLocalStorage();
 
+// membuka form input data baru
 function toggleFormContainer() {
   document.querySelector(".form-container").classList.toggle("active");
 }
