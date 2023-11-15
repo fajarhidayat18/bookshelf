@@ -23,7 +23,9 @@ document.querySelector(".nav-button.edit").addEventListener("click", () => {
   toggleClass("active-edit");
 });
 form.addEventListener("submit", addBook);
-
+document.querySelector("#search").addEventListener("keyup", (e) => {
+  loadDataFromLocalStorage(e.target.value);
+});
 let btnDelete;
 let btnDoneRead;
 let btnReRead;
@@ -95,7 +97,7 @@ function saveDataToLocalStorage() {
 }
 
 // fungsi untuk mengambil data daro localStorage dan menampilkannya ke UI
-function loadDataFromLocalStorage() {
+function loadDataFromLocalStorage(search) {
   const jsonData = localStorage.getItem("dataBooks");
   dataBooks = jsonData ? JSON.parse(jsonData) : [];
 
@@ -109,10 +111,27 @@ function loadDataFromLocalStorage() {
   for (let i = 0; i < dataBooks.length; i++) {
     const dataBook = dataBooks[i];
 
-    if (!dataBook.isComplete) {
-      unRead.innerHTML += createCardHTML(dataBook, false);
+    if (search) {
+      const titleIncludesSearch = dataBook.title
+        .toLowerCase()
+        .includes(search.toLowerCase());
+      const authorIncludesSearch = dataBook.author
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      if (titleIncludesSearch || authorIncludesSearch) {
+        if (!dataBook.isComplete) {
+          unRead.innerHTML += createCardHTML(dataBook, false);
+        } else {
+          doneReading.innerHTML += createCardHTML(dataBook, true);
+        }
+      }
     } else {
-      doneReading.innerHTML += createCardHTML(dataBook, true);
+      if (!dataBook.isComplete) {
+        unRead.innerHTML += createCardHTML(dataBook, false);
+      } else {
+        doneReading.innerHTML += createCardHTML(dataBook, true);
+      }
     }
   }
 
