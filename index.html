@@ -18,9 +18,27 @@
   <body>
     <nav>
       <ul>
-        <li>
-          <button type="button" class="button-form">
+        <li class="nav-link">
+          <div class="form-search">
+            <input type="text" name="search" id="search" />
+            <label for="search">
+              <span class="material-icons-round"> search </span>
+            </label>
+          </div>
+        </li>
+        <li class="nav-link">
+          <button type="button" class="button-form nav-button">
             <span class="material-icons-round"> bookmark_add </span>
+          </button>
+        </li>
+        <li class="nav-link">
+          <button type="button" class="button-form nav-button delete">
+            <span class="material-icons-round"> delete </span>
+          </button>
+        </li>
+        <li class="nav-link">
+          <button type="button" class="button-form nav-button edit">
+            <span class="material-icons-round"> edit </span>
           </button>
         </li>
       </ul>

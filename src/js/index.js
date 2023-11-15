@@ -1,21 +1,35 @@
+const body = document.querySelector("body");
+const doneReading = document.querySelector(".done-reading");
+const unRead = document.querySelector(".unread");
+const form = document.querySelector("#bookForm");
+
 document.querySelector(".btn-close").addEventListener("click", () => {
   toggleFormContainer();
 });
 document.querySelector(".button-form").addEventListener("click", () => {
   toggleFormContainer();
 });
+document.querySelector(".nav-button.delete").addEventListener("click", () => {
+  toggleClass("active-delete");
+});
+document.querySelector(".nav-button.edit").addEventListener("click", () => {
+  toggleClass("active-edit");
+});
+form.addEventListener("submit", addBook);
 let btnDelete;
 let btnDoneRead;
 let btnReRead;
-// ==============================================================
-
-const doneReading = document.querySelector(".done-reading");
-const unRead = document.querySelector(".unread");
-const form = document.querySelector("#bookForm");
-
 let books = [];
 
-form.addEventListener("submit", addBook);
+// ==============================================================
+
+function toggleClass(className) {
+  const isActive = body.classList.contains(className);
+  body.classList.remove("active-delete", "active-edit");
+  if (!isActive) {
+    body.classList.add(className);
+  }
+}
 
 // menjalankan fungsi saat halaman di kunjungi atau dibuka
 loadDataFromLocalStorage();
@@ -131,12 +145,17 @@ function createCardHTML(dataBook, isComplete) {
 
   return `
     <article class="card" id="${dataBook.id}">
-      <h4 class="book-title">${dataBook.title}</h4>
-      <span class="publication-year">${dataBook.year}</span>
-      <span class="author">${dataBook.author}</span>
-      <div class="actions-button-wrapper">
+      <div class="card-body">
+        <h4 class="book-title">${dataBook.title}</h4>
+        <p class="author">${dataBook.author}</p>
+        <span class="publication-year">${dataBook.year}</span>
+      </div>
+      <div class="card-footer">
         <button type="button" class="delete">
           <span class="material-icons-round">delete</span>
+        </button>
+        <button type="button" class="edit">
+          <span class="material-icons-round">edit</span>
         </button>
         <button type="button" class="${statusButton}">
           <span class="material-icons-round">${
