@@ -3,8 +3,15 @@ const doneReading = document.querySelector(".done-reading");
 const unRead = document.querySelector(".unread");
 const form = document.querySelector("#bookForm");
 
-document.querySelector(".btn-close").addEventListener("click", () => {
-  toggleFormContainer();
+document.querySelector(".form-container").addEventListener("click", (e) => {
+  const isFormGroup =
+    e.target.classList.contains("form-group") ||
+    e.target.closest(".form-group");
+  const isBtnClose = e.target.classList.contains("btn-close");
+
+  if (!isFormGroup || isBtnClose) {
+    toggleFormContainer();
+  }
 });
 document.querySelector(".button-form").addEventListener("click", () => {
   toggleFormContainer();
@@ -16,11 +23,14 @@ document.querySelector(".nav-button.edit").addEventListener("click", () => {
   toggleClass("active-edit");
 });
 form.addEventListener("submit", addBook);
+
 let btnDelete;
 let btnDoneRead;
 let btnReRead;
 let books = [];
 
+// menjalankan fungsi saat halaman di kunjungi atau dibuka
+loadDataFromLocalStorage();
 // ==============================================================
 
 function toggleClass(className) {
@@ -30,9 +40,6 @@ function toggleClass(className) {
     body.classList.add(className);
   }
 }
-
-// menjalankan fungsi saat halaman di kunjungi atau dibuka
-loadDataFromLocalStorage();
 
 // membuka form input data baru
 function toggleFormContainer() {
@@ -95,6 +102,10 @@ function loadDataFromLocalStorage() {
   unRead.innerHTML = "";
   doneReading.innerHTML = "";
 
+  btnDelete = document.querySelectorAll(".delete");
+  btnDoneRead = document.querySelectorAll(".finish-reading");
+  btnReRead = document.querySelectorAll(".re-reading");
+
   for (let i = 0; i < dataBooks.length; i++) {
     const dataBook = dataBooks[i];
 
@@ -104,10 +115,6 @@ function loadDataFromLocalStorage() {
       doneReading.innerHTML += createCardHTML(dataBook, true);
     }
   }
-
-  btnDelete = document.querySelectorAll(".delete");
-  btnDoneRead = document.querySelectorAll(".finish-reading");
-  btnReRead = document.querySelectorAll(".re-reading");
 
   for (let i = 0; i < btnDelete.length; i++) {
     btnDelete[i].addEventListener("click", () => {
