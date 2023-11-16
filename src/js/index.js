@@ -2,8 +2,9 @@ const body = document.querySelector("body");
 const doneReading = document.querySelector(".done-reading");
 const unRead = document.querySelector(".unread");
 const form = document.querySelector("#bookForm");
+const formContainer = document.querySelector(".form-container");
 
-document.querySelector(".form-container").addEventListener("click", (e) => {
+formContainer.addEventListener("click", (e) => {
   const isFormGroup =
     e.target.classList.contains("form-group") ||
     e.target.closest(".form-group");
@@ -16,19 +17,23 @@ document.querySelector(".form-container").addEventListener("click", (e) => {
 document.querySelector(".button-form").addEventListener("click", () => {
   toggleFormContainer();
 });
-document.querySelector(".nav-button.delete").addEventListener("click", () => {
-  toggleClass("active-delete");
-});
-document.querySelector(".nav-button.edit").addEventListener("click", () => {
+document
+  .querySelector(".nav-button.delete-nav")
+  .addEventListener("click", () => {
+    toggleClass("active-delete");
+  });
+document.querySelector(".nav-button.edit-nav").addEventListener("click", () => {
   toggleClass("active-edit");
 });
-form.addEventListener("submit", addBook);
 document.querySelector("#search").addEventListener("keyup", (e) => {
   loadDataFromLocalStorage(e.target.value);
 });
+form.addEventListener("submit", addBook);
+
 let btnDelete;
 let btnDoneRead;
 let btnReRead;
+let btnEdit;
 let books = [];
 
 // menjalankan fungsi saat halaman di kunjungi atau dibuka
@@ -79,15 +84,68 @@ function addBook(e) {
     alert("Dimohon untuk melengkapkan data buku");
   }
 }
+// Fungsi untuk mengedit buku
+function editBook(e, dataBook) {
+  e.preventDefault();
+  const formData = e.target;
+  const jsonData = localStorage.getItem("dataBooks");
+  let dataBooks = jsonData ? JSON.parse(jsonData) : [];
+
+  if (formData.title.value && formData.author.value && formData.year.value) {
+    const updatedBook = {
+      id: dataBook.id,
+      title: formData.title.value,
+      author: formData.author.value,
+      year: parseInt(formData.year.value),
+      isComplete: formData.isComplete.checked,
+    };
+
+    let bookFound = false;
+
+    // Loop untuk mencari buku dan memperbarui datanya
+    for (let i = 0; i < dataBooks.length; i++) {
+      if (dataBooks[i].id === updatedBook.id) {
+        dataBooks[i] = updatedBook;
+        bookFound = true;
+        break;
+      }
+    }
+
+    if (bookFound) {
+      //console.log("Data buku yang akan diubah:", dataBook);
+      //console.log("Data buku yang diperbarui:", updatedBook);
+      alert("buku telah diperbarui");
+      // Simpan data ke localStorage
+      localStorage.setItem("dataBooks", JSON.stringify(dataBooks));
+
+      // Tampilkan kembali data terbaru
+      loadDataFromLocalStorage();
+
+      // Tutup form edit
+      document.querySelector("#containerEditForm").remove();
+    } else {
+      console.error("Data buku tidak ditemukan");
+    }
+  } else {
+    alert("Dimohon untuk melengkapkan data buku");
+  }
+}
 
 // fungsi untuk ngecek kalau data sudah ada
 function isBookExists(title, author, year) {
-  return dataBooks.find(
-    (book) =>
+  const jsonData = localStorage.getItem("dataBooks");
+  let dataBooks = jsonData ? JSON.parse(jsonData) : [];
+  for (let i = 0; i < dataBooks.length; i++) {
+    const book = dataBooks[i];
+    if (
       book.title === title &&
       book.author === author &&
       book.year === parseInt(year)
-  );
+    ) {
+      return true; // Buku ditemukan
+    }
+  }
+  return false; // Buku tidak ditemukan
 }
 
 // fungsi untuk menyimpan nilai dari variabel books ke dalam localStorage
@@ -99,14 +157,10 @@ function saveDataToLocalStorage() {
 // fungsi untuk mengambil data daro localStorage dan menampilkannya ke UI
 function loadDataFromLocalStorage(search) {
   const jsonData = localStorage.getItem("dataBooks");
-  dataBooks = jsonData ? JSON.parse(jsonData) : [];
+  let dataBooks = jsonData ? JSON.parse(jsonData) : [];
 
   unRead.innerHTML = "";
   doneReading.innerHTML = "";
-
-  btnDelete = document.querySelectorAll(".delete");
-  btnDoneRead = document.querySelectorAll(".finish-reading");
-  btnReRead = document.querySelectorAll(".re-reading");
 
   for (let i = 0; i < dataBooks.length; i++) {
     const dataBook = dataBooks[i];
@@ -135,6 +189,13 @@ function loadDataFromLocalStorage(search) {
     }
   }
 
+  btnDoneRead = document.querySelectorAll(".finish-reading");
+  btnReRead = document.querySelectorAll(".re-reading");
+
+  btnDelete = document.querySelectorAll(".delete");
+  btnEdit = document.querySelectorAll(".edit");
+  btnEdit = document.querySelectorAll(".edit");
+
   for (let i = 0; i < btnDelete.length; i++) {
     btnDelete[i].addEventListener("click", () => {
       const currentId = btnDelete[i].parentElement.parentElement.id;
@@ -142,6 +203,32 @@ function loadDataFromLocalStorage(search) {
 
       localStorage.setItem("dataBooks", JSON.stringify(dataBooks));
       loadDataFromLocalStorage();
+    });
+  }
+
+  for (let i = 0; i < btnEdit.length; i++) {
+    btnEdit[i].addEventListener("click", () => {
+      const bookElement = btnEdit[i].closest(".card");
+
+      if (bookElement) {
+        const bookId = bookElement.id;
+
+        let currentData;
+        for (let j = 0; j < dataBooks.length; j++) {
+          if (dataBooks[j].id === bookId) {
+            currentData = dataBooks[j];
+            break;
+          }
+        }
+
+        if (currentData) {
+          createFormHTML(currentData);
+        } else {
+          console.error("Data buku tidak ditemukan");
+        }
+      } else {
+        console.error("Elemen buku tidak ditemukan");
+      }
     });
   }
 
@@ -165,6 +252,7 @@ function loadDataFromLocalStorage(search) {
     });
   }
 }
+
 // fungsi membuat UI
 function createCardHTML(dataBook, isComplete) {
   const statusButton = isComplete ? "re-reading" : "finish-reading";
@@ -192,6 +280,65 @@ function createCardHTML(dataBook, isComplete) {
     </article>
   `;
 }
+
+function createFormHTML(dataBook) {
+  const mainContainer = document.querySelector("main");
+  const formHTML = `
+    <section class="form-container active" id="containerEditForm">
+      <form class="form-group" id="editBook">
+        <div class="input-group">
+          <label htmlFor="title">Judul Buku</label>
+          <input type="text" name="title" id="title" autoComplete="off" value="${
+            dataBook.title
+          }" />
+        </div>
+        <div class="input-group">
+          <label htmlFor="author">Penulis</label>
+          <input type="text" name="author" id="author" autoComplete="off" value="${
+            dataBook.author
+          }" />
+        </div>
+        <div class="input-group">
+          <label htmlFor="year">Tahun Terbit</label>
+          <input type="number" name="year" id="year" autoComplete="off" value="${
+            dataBook.year
+          }" />
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" name="isComplete" id="isComplete" ${
+            dataBook.isComplete ? "checked" : ""
+          }/>
+          <label htmlFor="isComplete">Sudah Dibaca</label>
+        </div>
+        <button type="submit" class="btn-submit">Simpan</button>
+        <button type="button" class="btn-close">Batal</button>
+      </form>
+    </section>
+  `;
+
+  mainContainer.insertAdjacentHTML("beforeend", formHTML);
+
+  const formEdit = document.querySelector("#editBook");
+  const formEditContainer = document.querySelector("#containerEditForm");
+
+  formEdit.addEventListener("submit", (e) => {
+    e.preventDefault();
+    editBook(e, dataBook);
+    // Add your form submission logic here
+  });
+
+  formEditContainer.addEventListener("click", (e) => {
+    const isFormGroup =
+      e.target.classList.contains("form-group") ||
+      e.target.closest(".form-group");
+    const isBtnClose = e.target.classList.contains("btn-close");
+
+    if (!isFormGroup || isBtnClose) {
+      formEditContainer.remove();
+    }
+  });
+}
+
 // fungsi untuk menghapus data buku localStorage
 function removeBookById(books, id) {
   const updatedBooks = [];
@@ -202,6 +349,7 @@ function removeBookById(books, id) {
   }
   return updatedBooks;
 }
+
 // fungsi untuk memperbarui buku sudah dibaca dan untuk membaca ulang dari data buku
 function updateBookStatus(books, id, isComplete) {
   for (let i = 0; i < books.length; i++) {

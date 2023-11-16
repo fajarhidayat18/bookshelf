@@ -52,13 +52,13 @@ body {
 body.active-edit .edit {
   display: flex;
 }
-body.active-edit .nav-link button.edit {
+body.active-edit .nav-link button.edit-nav {
   color: white;
 }
 body.active-delete .delete {
   display: flex;
 }
-body.active-delete .nav-link button.delete {
+body.active-delete .nav-link button.delete-nav {
   color: white;
 }
 button {
